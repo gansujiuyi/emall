@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+			http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+			http://www.springframework.org/schema/context
+			http://www.springframework.org/schema/context/spring-context-4.1.xsd
+				http://www.springframework.org/schema/mvc 
+		http://www.springframework.org/schema/mvc/spring-mvc-4.1.xsd">
+	<!-- 加载配置文件 -->
+
+	<context:property-placeholder location="classpath:config.properties" />
+	<!-- 扫描service自动注入为bean -->
+	
+	<!-- 使用Spring组件扫描的方式来实现自动注入bean -->
+	<context:component-scan base-package="com.jiuyi.jyplant.*.dao.impl"/>
+	<context:component-scan base-package="com.jiuyi.jyplant.*.service.impl"/>
+	<context:component-scan base-package="com.jiuyi.net.service.impl"/>
+	<!-- 隐式地向 Spring 容器注册  -->
+	<context:annotation-config/>
+	<!-- 处理器映射器HandlerMapping -->
+	<bean
+		class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping" />
+
+	<!-- 处理器设配器HandlerAdapter -->
+	<bean
+		class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+		<property name="messageConverters">
+			<list>
+				<bean
+					class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"></bean>
+			</list>
+		</property>
+	</bean>
+<!-- 在实际开发中通常都需配置 mvc:annotation-driven标签,这个标签是开启注解 -->
+	<mvc:annotation-driven></mvc:annotation-driven>
+	<!-- 拦截器 -->
+	<mvc:interceptors>
+		<!-- 多个拦截器，顺序执行 -->
+		<mvc:interceptor>
+			<mvc:mapping path="/**" />
+			<bean class="com.jiuyi.jyplant.interceptor.LoginInterceptor"></bean>
+		</mvc:interceptor>
+	</mvc:interceptors>
+</beans>
+	
